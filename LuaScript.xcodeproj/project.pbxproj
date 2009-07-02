@@ -207,7 +207,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# This shell script simply copies the built plug-in to \"~/Library/Graphics/Quartz Composer Plug-Ins\" and overrides any previous version at that location\n\nmkdir -p \"$USER_LIBRARY_DIR/Graphics/Quartz Composer Plug-Ins\"\nrm -rf \"$USER_LIBRARY_DIR/Graphics/Quartz Composer Plug-Ins/LuaScript.plugin\"\ncp -rf \"$BUILT_PRODUCTS_DIR/LuaScript.plugin\" \"$USER_LIBRARY_DIR/Graphics/Quartz Composer Plug-Ins/\"\n";
+			shellScript = "# This shell script simply copies the built plug-in to \"~/Library/Graphics/Quartz Composer Plug-Ins\" and overrides any previous version at that location\n\n# clean up any previous products/symbolic links in the Internet Plug-Ins folder\nif [ -a \"$USER_LIBRARY_DIR/Graphics/Quartz Composer Plug-Ins/Lua.plugin\" ]; then\n  rm -Rf \"$USER_LIBRARY_DIR/Graphics/Quartz Composer Plug-Ins/Lua.plugin\"\nelse\n  mkdir -p \"$USER_LIBRARY_DIR/Graphics/Quartz Composer Plug-Ins\"\nfi\n\n# Depending on the build configuration, either copy or link to the most recent product\nif [ \"${CONFIGURATION}\" == \"Debug\" ]; then\n  # if we're debugging, add a symbolic link to the plug-in\n  ln -sf \"${TARGET_BUILD_DIR}/Lua.plugin\" \\\n    \"${USER_LIBRARY_DIR}/Graphics/Quartz Composer Plug-Ins/Lua.plugin\"\nelif [ \"${CONFIGURATION}\" == \"Release\" ]; then\n  # if we're compiling for release, just copy the plugin to the Internet Plug-ins folder\n  cp -Rfv \"$BUILT_PRODUCTS_DIR/Lua.plugin\" \"$USER_LIBRARY_DIR/Graphics/Quartz Composer Plug-Ins/\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
