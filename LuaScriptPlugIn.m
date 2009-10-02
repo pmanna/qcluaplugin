@@ -556,7 +556,7 @@ static NSInteger compareStrings(NSString *s1, NSString *s2, void* ctxt)
 	if (!programString) {
 		NSString			*defPath	= [[NSBundle bundleForClass: [self class]] pathForResource: @"Default" ofType: @"lua"];
 		
-		[self setProgramString: [self _coloredStringWithString: [NSString stringWithContentsOfFile: defPath]]];
+		[self setProgramString: [self _coloredStringWithString: [NSString stringWithContentsOfFile: defPath encoding: NSUTF8StringEncoding error: nil]]];
 	}
 	
 	return programString;
