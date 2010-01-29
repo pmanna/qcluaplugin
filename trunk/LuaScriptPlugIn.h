@@ -46,6 +46,7 @@
 	
 	BOOL				_readyToRun;
 	BOOL				_checkSyntax;
+	BOOL				_programChanged;
 	NSString			*syntaxError;
 	
 }

@@ -57,6 +57,81 @@ static NSArray		*dummyStructure;
 
 @synthesize syntaxError;
 
+// Utility function, from PiL 24.2.3, expanded and adapted to Cocoa
+static void tableDump(lua_State *L, int idx, NSMutableString *outStr)
+{
+	lua_pushnil(L);
+	while (lua_next(L, idx))
+	{
+		if (lua_type(L, -2) == LUA_TSTRING) {
+			[outStr appendFormat: @"[\'%s\']=", lua_tostring(L, -2)];
+		} else if (lua_type(L, -2) == LUA_TNUMBER) {
+			[outStr appendFormat: @"[%d]=", lua_tointeger(L, -2)];
+		} else {
+			// Unrecognised key type
+		}
+		// Create the output according to the type we've found
+		switch (lua_type(L, -1)) {
+			case LUA_TBOOLEAN:
+				[outStr appendString: (lua_toboolean(L, -1) ? @"true, " : @"false, ")];
+				break;
+			case LUA_TNUMBER:
+				[outStr appendFormat: @"%g, ", lua_tonumber(L, -1)];
+				break;
+			case LUA_TSTRING:
+				[outStr appendFormat: @"\'%s\', ", lua_tostring(L, -1)];
+				break;
+			case LUA_TLIGHTUSERDATA:
+			case LUA_TUSERDATA:
+				[outStr appendFormat: @"<%s>, ", lua_typename(L, -1)];
+				break;
+			case LUA_TTABLE:
+				[outStr appendString: @"{"];
+				tableDump(L, -2, outStr);
+				[outStr appendString: @"}, "];
+				break;
+		}
+		lua_pop(L, 1);
+	}
+}
+
+static void stackDump (lua_State *L)
+{
+	int				ii;
+	int				top	= lua_gettop(L);
+	NSMutableString	*outStr	= [NSMutableString string];
+	
+	for (ii = 1; ii <= top; ii++) {  /* repeat for each level */
+        int		t	= lua_type(L, ii);
+		
+        switch (t) {
+			case LUA_TSTRING:  /* strings */
+				[outStr appendFormat: @"\'%s\' | ", lua_tostring(L, ii)];
+				break;
+				
+			case LUA_TBOOLEAN:  /* booleans */
+				[outStr appendString: (lua_toboolean(L, ii) ? @"true | " : @"false | ")];
+				break;
+				
+			case LUA_TNUMBER:  /* numbers */
+				[outStr appendFormat: @"%g | ", lua_tonumber(L, ii)];
+				break;
+				
+			case LUA_TTABLE:  /* tables */
+				[outStr appendString: @"{"];
+				tableDump(L, ii, outStr);
+				[outStr appendString: @"} | "];
+				break;
+				
+			default:  /* other values */
+				[outStr appendFormat: @"<%s> | ", lua_typename(L, t)];
+				break;
+				
+        }
+	}
+	NSLog(@"Lua Stack -> %@", outStr);
+}
+
 // Image isn't supported easily, we should implement both input- and output-image protocols
 static int imageUserDataType(lua_State *L)
 {
@@ -183,7 +258,6 @@ static int structureUserDataType(lua_State *L)
 		NSEnumerator	*enumKeys;
 		NSObject		*keyName;
 		
-		_readyToRun	= YES;
 		if (_checkSyntax) {
 			[self setSyntaxError: @"LuaScript Program OK"];
 		}
@@ -420,6 +494,8 @@ static int structureUserDataType(lua_State *L)
 			}
 			lua_pop(L, 1);
 		}
+		_readyToRun		= YES;
+		_programChanged	= YES;
 	} else {
 		if (_checkSyntax) {
 			[self setSyntaxError: [NSString stringWithFormat: @"LuaScript Program Error: %s", lua_tostring(L, -1)]]; 
@@ -624,12 +700,72 @@ static int structureUserDataType(lua_State *L)
 					[self _setTableAtIndex: -2 onTarget: outputValue selector: @selector(setObject:forKey:)];
 					break;
 			}
-			[aTarget performSelector: aSelector
-						  withObject: outputValue
-						  withObject: [key description]];
+			@try {
+				[aTarget performSelector: aSelector
+							  withObject: outputValue
+							  withObject: [key description]];
+			}
+			@catch (NSException * exc) {
+				NSLog(@"%s: %@", __PRETTY_FUNCTION__, [exc reason]);
+			}
 		}
 		lua_pop(L, 1);
 	}
+}
+
+- (void) _assignToLuaTable: (id) value
+{
+	if ([value isKindOfClass: [NSArray class]]) {
+		// Array, crawl through indexes, and push related values
+		NSInteger	ii, numElements	= [(NSArray *)value count];
+		
+		for (ii = 0; ii < numElements; ii++) {
+			id		obj			= [(NSArray *)value objectAtIndex: ii];
+			
+			if ([obj isKindOfClass: [NSNumber class]]) {
+				// Pure number, no boolean
+				lua_pushnumber(L, [obj doubleValue]);
+			} else if ([obj isKindOfClass: [NSString class]]) {
+				// String
+				lua_pushstring(L, [obj UTF8String]);
+			} else if ([obj isKindOfClass: [NSArray class]] || [obj isKindOfClass: [NSDictionary class]]) {
+				// Table, create a new one
+				lua_createtable(L, [obj count], 0);
+				[self _assignToLuaTable: obj];
+			} else {
+				// Anything else, lightuserdata
+				lua_pushlightuserdata(L, obj);
+			}
+			lua_setfield(L, -2, [[NSString stringWithFormat: @"%d", ii + 1] UTF8String]);
+		}
+	} else if ([value isKindOfClass: [NSDictionary class]]) {
+		// Dictionary, browse keys and assign values to table
+		NSEnumerator	*enumKeys	= [(NSDictionary *)value keyEnumerator];
+		id				dictKey;
+		
+		while ((dictKey = [enumKeys nextObject]) != nil) {
+			id		obj	= [(NSDictionary *)value objectForKey: dictKey];
+			
+			if ([obj isKindOfClass: [NSNumber class]]) {
+				lua_pushnumber(L, [obj doubleValue]);
+			} else if ([obj isKindOfClass: [NSString class]]) {
+				lua_pushstring(L, [obj UTF8String]);
+			} else if ([obj isKindOfClass: [NSArray class]] || [obj isKindOfClass: [NSDictionary class]]) {
+				// See if a table with that name is already in, create one otherwise
+				lua_getfield(L,  -1, [dictKey UTF8String]);
+				
+				if (lua_type(L, -1) == LUA_TNIL) {
+					lua_pop(L, 1);
+					lua_createtable(L, [obj count], 0);
+				}
+				[self _assignToLuaTable: obj];
+			} else {
+				lua_pushlightuserdata(L, obj);
+			}
+			lua_setfield(L, -2, [dictKey UTF8String]);
+		}
+	}
+	
 }
 
 - (BOOL) execute:(id<QCPlugInContext>)context atTime:(NSTimeInterval)time withArguments:(NSDictionary*)arguments
@@ -638,7 +774,7 @@ static int structureUserDataType(lua_State *L)
 		[self _interpretProgram];
 	
 	if (!_readyToRun)
-		return NO;
+		return YES;
 	
 	lua_settop(L, 0);	// Clean stack
 	
@@ -653,7 +789,7 @@ static int structureUserDataType(lua_State *L)
 				NSString		*keyName	= [key description];
 				NSDictionary	*inputDict	= [_inputKeys objectForKey: key];
 				
-				if ([self didValueForInputKeyChange: keyName]) {
+				if ([self didValueForInputKeyChange: keyName] || _programChanged) {
 					id			value	= [self valueForInputKey: keyName];
 					NSString	*type	= [inputDict objectForKey: QCPortAttributeTypeKey];
 					
@@ -674,43 +810,8 @@ static int structureUserDataType(lua_State *L)
 						// Push on the stack the table name
 						lua_getfield(L,  -1, [keyName UTF8String]);
 						
-						if ([value isKindOfClass: [NSArray class]]) {
-							// Array, crawl through indexes, and push related values
-							NSInteger	ii, numElements	= [(NSArray *)value count];
-							
-							for (ii = 0; ii < numElements; ii++) {
-								id		obj			= [(NSArray *)value objectAtIndex: ii];
-								
-								if ([obj isKindOfClass: [NSNumber class]]) {
-									// Pure number, no boolean
-									lua_pushnumber(L, [obj doubleValue]);
-								} else if ([obj isKindOfClass: [NSString class]]) {
-									// String
-									lua_pushstring(L, [obj UTF8String]);
-								} else {
-									// Anything else, lightuserdata
-									lua_pushlightuserdata(L, obj);
-								}
-								lua_setfield(L, -3, [[NSString stringWithFormat: @"%d", ii + 1] UTF8String]);
-							}
-						} else if ([value isKindOfClass: [NSDictionary class]]) {
-							// Dictionary, browse keys and assign values to table
-							NSEnumerator	*enumKeys	= [(NSDictionary *)value keyEnumerator];
-							id				dictKey;
-							
-							while ((dictKey = [enumKeys nextObject]) != nil) {
-								id		obj	= [(NSDictionary *)value objectForKey: dictKey];
-								
-								if ([obj isKindOfClass: [NSNumber class]]) {
-									lua_pushnumber(L, [obj doubleValue]);
-								} else if ([obj isKindOfClass: [NSString class]]) {
-									lua_pushstring(L, [obj UTF8String]);
-								} else {
-									lua_pushlightuserdata(L, obj);
-								}
-								lua_setfield(L, -3, [dictKey UTF8String]);
-							}
-						}
+						[self _assignToLuaTable: value];
+						
 						// Pop the table
 						lua_pop(L, 1);
 					}
@@ -719,6 +820,7 @@ static int structureUserDataType(lua_State *L)
 		}
 		lua_pop(L, 1);
 	}
+	
 	
 #ifdef TIME_BASED
 	// Updates time (if it doesn'exist, it's created)
@@ -738,11 +840,11 @@ static int structureUserDataType(lua_State *L)
 			}
 			lua_pop(L, 1);
 		}
+		
+		_programChanged	= NO;
 	} else {
 		NSLog(@"LuaScript main(): %s", lua_tostring(L, -1));
 		lua_pop(L, 1);
-		
-		return NO;
 	}
 	
 	return YES;
