@@ -157,11 +157,6 @@ static int structureUserDataType(lua_State *L)
 	return [NSArray arrayWithObject: @"programString"];
 }
 
-static NSInteger compareStrings(NSString *s1, NSString *s2, void* ctxt)
-{
-	return [s1 compare: s2];
-}
-
 - (void)_interpretProgram
 {
 	const char	*progCString	= NULL;
@@ -197,7 +192,8 @@ static NSInteger compareStrings(NSString *s1, NSString *s2, void* ctxt)
 		lua_getglobal(L, "inputs");
 		if (lua_gettop(L)) {
 			if (lua_type(L, -1) == LUA_TTABLE) {
-				NSMutableArray	*oldKeys	= [NSMutableArray arrayWithArray: [_inputKeys allKeys]];
+				NSArray			*orderedInputs	= [[_inputKeys allKeys] sortedArrayUsingSelector: @selector(compare:)];
+				NSMutableArray	*oldKeys		= [NSMutableArray arrayWithArray: orderedInputs];
 				
 				lua_pushnil(L);
 				while (lua_next(L, 1))
@@ -312,7 +308,8 @@ static NSInteger compareStrings(NSString *s1, NSString *s2, void* ctxt)
 		lua_getglobal(L, "outputs");
 		if (lua_gettop(L)) {
 			if (lua_type(L, -1) == LUA_TTABLE) {
-				NSMutableArray	*oldKeys	= [NSMutableArray arrayWithArray: [_outputKeys allKeys]];
+				NSArray			*orderedOutputs	= [[_outputKeys allKeys] sortedArrayUsingSelector: @selector(compare:)];
+				NSMutableArray	*oldKeys		= [NSMutableArray arrayWithArray: orderedOutputs];
 				
 				lua_pushnil(L);
 				while (lua_next(L, 1))
@@ -589,6 +586,52 @@ static NSInteger compareStrings(NSString *s1, NSString *s2, void* ctxt)
 {
 }
 
+- (void)_setTableAtIndex: (NSInteger)anIdx onTarget: (id)aTarget selector: (SEL)aSelector
+{
+	lua_pushnil(L);
+	while (lua_next(L, anIdx))
+	{
+		id			key			= nil;
+		
+		if (lua_type(L, -2) == LUA_TSTRING) {
+			key		= [NSString stringWithUTF8String: lua_tostring(L, -2)];
+		} else if (lua_type(L, -2) == LUA_TNUMBER) {
+			key		= [NSNumber numberWithInt: lua_tointeger(L, -2)];
+		} else {
+			// Unrecognised key type
+		}
+		
+		if (key) {
+			id		outputValue	= nil;
+			
+			// Create the output according to the type we've found
+			switch (lua_type(L, -1)) {
+				case LUA_TBOOLEAN:
+					outputValue	= [NSNumber numberWithBool: (BOOL)lua_toboolean(L, -1)];
+					break;
+				case LUA_TNUMBER:
+					outputValue	= [NSNumber numberWithDouble: lua_tonumber(L, -1)];
+					break;
+				case LUA_TSTRING:
+					outputValue	= [NSString stringWithUTF8String: lua_tostring(L, -1)];
+					break;
+				case LUA_TLIGHTUSERDATA:
+				case LUA_TUSERDATA:
+					outputValue	= lua_touserdata(L, -1);
+					break;
+				case LUA_TTABLE:
+					outputValue	= [NSMutableDictionary dictionaryWithCapacity: 2];
+					[self _setTableAtIndex: -2 onTarget: outputValue selector: @selector(setObject:forKey:)];
+					break;
+			}
+			[aTarget performSelector: aSelector
+						  withObject: outputValue
+						  withObject: [key description]];
+		}
+		lua_pop(L, 1);
+	}
+}
+
 - (BOOL) execute:(id<QCPlugInContext>)context atTime:(NSTimeInterval)time withArguments:(NSDictionary*)arguments
 {
 	if (!L)
@@ -691,45 +734,7 @@ static NSInteger compareStrings(NSString *s1, NSString *s2, void* ctxt)
 		lua_getglobal(L, "outputs");
 		if (lua_gettop(L)) {
 			if (lua_type(L, -1) == LUA_TTABLE) {
-				lua_pushnil(L);
-				while (lua_next(L, 1))
-				{
-					id			key			= nil;
-					
-					if (lua_type(L, -2) == LUA_TSTRING) {
-						key		= [NSString stringWithUTF8String: lua_tostring(L, -2)];
-					} else if (lua_type(L, -2) == LUA_TNUMBER) {
-						key		= [NSNumber numberWithInt: lua_tointeger(L, -2)];
-					} else {
-						// Unrecognised key type
-					}
-					
-					if (key) {
-						id		outputValue	= nil;
-						
-						// Create the output according to the type we've found
-						switch (lua_type(L, -1)) {
-							case LUA_TBOOLEAN:
-								outputValue	= [NSNumber numberWithBool: (BOOL)lua_toboolean(L, -1)];
-								break;
-							case LUA_TNUMBER:
-								outputValue	= [NSNumber numberWithDouble: lua_tonumber(L, -1)];
-								break;
-							case LUA_TSTRING:
-								outputValue	= [NSString stringWithUTF8String: lua_tostring(L, -1)];
-								break;
-							case LUA_TLIGHTUSERDATA:
-							case LUA_TUSERDATA:
-								outputValue	= lua_touserdata(L, -1);
-								break;
-							case LUA_TTABLE:
-								// TODO
-								break;
-						}
-						[self setValue: outputValue forOutputKey: [key description]];
-					}
-					lua_pop(L, 1);
-				}
+				[self _setTableAtIndex: 1 onTarget: self selector: @selector(setValue:forOutputKey:)];
 			}
 			lua_pop(L, 1);
 		}
