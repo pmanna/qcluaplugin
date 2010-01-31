@@ -64,7 +64,7 @@ static void tableDump(lua_State *L, int idx, NSMutableString *outStr)
 	while (lua_next(L, idx))
 	{
 		if (lua_type(L, -2) == LUA_TSTRING) {
-			[outStr appendFormat: @"[\'%s\']=", lua_tostring(L, -2)];
+			[outStr appendFormat: @"[\"%s\"]=", lua_tostring(L, -2)];
 		} else if (lua_type(L, -2) == LUA_TNUMBER) {
 			[outStr appendFormat: @"[%d]=", lua_tointeger(L, -2)];
 		} else {
@@ -79,7 +79,7 @@ static void tableDump(lua_State *L, int idx, NSMutableString *outStr)
 				[outStr appendFormat: @"%g, ", lua_tonumber(L, -1)];
 				break;
 			case LUA_TSTRING:
-				[outStr appendFormat: @"\'%s\', ", lua_tostring(L, -1)];
+				[outStr appendFormat: @"\"%s\", ", lua_tostring(L, -1)];
 				break;
 			case LUA_TLIGHTUSERDATA:
 			case LUA_TUSERDATA:
@@ -106,7 +106,7 @@ static void stackDump (lua_State *L)
 		
         switch (t) {
 			case LUA_TSTRING:  /* strings */
-				[outStr appendFormat: @"\'%s\' | ", lua_tostring(L, ii)];
+				[outStr appendFormat: @"\"%s\" | ", lua_tostring(L, ii)];
 				break;
 				
 			case LUA_TBOOLEAN:  /* booleans */
@@ -241,7 +241,7 @@ static int structureUserDataType(lua_State *L)
 		
 		lua_gc(L, LUA_GCSTOP, 0);  /* stop collector during initialization */
 		luaL_openlibs(L);  /* open libraries */
-//		lua_register(L, "imageType", imageUserDataType);
+		lua_register(L, "imageType", imageUserDataType);
 		lua_register(L, "colorType", colorUserDataType);
 		lua_register(L, "structureType", structureUserDataType);
 		lua_gc(L, LUA_GCRESTART, 0);
@@ -321,13 +321,12 @@ static int structureUserDataType(lua_State *L)
 								{
 									id	value	= lua_touserdata(L, -1);
 									
-//									if ([value isKindOfClass: [NSImage class]]) {
-//										inputType	= QCPortTypeImage;
-//										portAttrs	= [NSDictionary dictionaryWithObjectsAndKeys: inputType, QCPortAttributeTypeKey,
-//																								[key description], QCPortAttributeNameKey,
-//																								nil];
-//									} else
-									if ([value isKindOfClass: [NSColor class]]) {
+									if ([value isKindOfClass: [NSImage class]]) {
+										inputType	= QCPortTypeImage;
+										portAttrs	= [NSDictionary dictionaryWithObjectsAndKeys: inputType, QCPortAttributeTypeKey,
+																								[key description], QCPortAttributeNameKey,
+																								nil];
+									} else if ([value isKindOfClass: [NSColor class]]) {
 										inputType	= QCPortTypeColor;
 										portAttrs	= [NSDictionary dictionaryWithObjectsAndKeys: value, QCPortAttributeDefaultValueKey,
 																								inputType, QCPortAttributeTypeKey,
@@ -437,14 +436,12 @@ static int structureUserDataType(lua_State *L)
 								{
 									id	value	= lua_touserdata(L, -1);
 									
-//									if ([value isKindOfClass: [NSImage class]]) {
-//										outputType	= QCPortTypeImage;
-//										portAttrs	= [NSDictionary dictionaryWithObjectsAndKeys: value, QCPortAttributeDefaultValueKey,
-//																								outputType, QCPortAttributeTypeKey,
-//																								[key description], QCPortAttributeNameKey,
-//																								nil];
-//									} else
-									if ([value isKindOfClass: [NSColor class]]) {
+									if ([value isKindOfClass: [NSImage class]]) {
+										outputType	= QCPortTypeImage;
+										portAttrs	= [NSDictionary dictionaryWithObjectsAndKeys: outputType, QCPortAttributeTypeKey,
+																								[key description], QCPortAttributeNameKey,
+																								nil];
+									} else if ([value isKindOfClass: [NSColor class]]) {
 										outputType	= QCPortTypeColor;
 										portAttrs	= [NSDictionary dictionaryWithObjectsAndKeys: value, QCPortAttributeDefaultValueKey,
 																								outputType, QCPortAttributeTypeKey,
@@ -662,7 +659,10 @@ static int structureUserDataType(lua_State *L)
 {
 }
 
-- (void)_setTableAtIndex: (NSInteger)anIdx onTarget: (id)aTarget selector: (SEL)aSelector
+- (void)_unpackTableInContext: (id<QCPlugInContext>)context
+					  atIndex: (NSInteger)anIdx
+					 onTarget: (id)aTarget
+					 selector: (SEL)aSelector
 {
 	lua_pushnil(L);
 	while (lua_next(L, anIdx))
@@ -694,10 +694,18 @@ static int structureUserDataType(lua_State *L)
 				case LUA_TLIGHTUSERDATA:
 				case LUA_TUSERDATA:
 					outputValue	= lua_touserdata(L, -1);
+					// WARNING: This is NOT documented anywhere, but comes just as convenient
+					// to avoid rendering an image (as we should do if using input-output image sources)
+					if ([outputValue isKindOfClass: NSClassFromString(@"QCPlugInInputImage")]) {
+						outputValue	= [outputValue image];
+					}
 					break;
 				case LUA_TTABLE:
 					outputValue	= [NSMutableDictionary dictionaryWithCapacity: 2];
-					[self _setTableAtIndex: -2 onTarget: outputValue selector: @selector(setObject:forKey:)];
+					[self _unpackTableInContext: context
+										atIndex: -2
+									   onTarget: outputValue
+									   selector: @selector(setObject:forKey:)];
 					break;
 			}
 			@try {
@@ -806,6 +814,9 @@ static int structureUserDataType(lua_State *L)
 					} else if ([type isEqualToString: QCPortTypeColor]) {
 						lua_pushlightuserdata(L, value);
 						lua_setfield(L, -2, [keyName UTF8String]);
+					} else if ([type isEqualToString: QCPortTypeImage]) {
+						lua_pushlightuserdata(L, value);
+						lua_setfield(L, -2, [keyName UTF8String]);
 					} else if ([type isEqualToString: QCPortTypeStructure]) {
 						// Push on the stack the table name
 						lua_getfield(L,  -1, [keyName UTF8String]);
@@ -836,7 +847,10 @@ static int structureUserDataType(lua_State *L)
 		lua_getglobal(L, "outputs");
 		if (lua_gettop(L)) {
 			if (lua_type(L, -1) == LUA_TTABLE) {
-				[self _setTableAtIndex: 1 onTarget: self selector: @selector(setValue:forOutputKey:)];
+				[self _unpackTableInContext: context
+									atIndex: 1
+								   onTarget: self 
+								   selector: @selector(setValue:forOutputKey:)];
 			}
 			lua_pop(L, 1);
 		}
