@@ -38,18 +38,26 @@
 #define	kQCPlugIn_Description		"This patch executes a Lua script with an arbitrary number of input / output parameters.\n"\
 									"The \"main\" function of the patch is executed, taking as input the contents of the \"inputs\" "\
 									"table and returning values inside the \"outputs\" table.\n"\
-									"Only some classes for values are supported: Boolean, Number, String, Structures. "\
-									"Structures, however (translated to tables in Lua) can contain different types of data, that will become userdata in Lua.\n"\
-									"The script always gets executed first for error check with all input ports set to defaults set in the code"\
-									" (input types are inferred by the default values themselves)."
+									"Only some classes for values are supported for use as variables in Lua code: Boolean, Number, String, Structures. "\
+									"Other types will get translated to Lua user data.\n"\
+									"Structures are translated to tables in Lua and can contain in input different types of data, that will, again, "\
+									"become userdata in Lua if not recognized. In output, tables are always translated to dictionary structures.\n"\
+									"Experimental support exists for type Image, that is passed around Lua as user data.\n"\
+									"The script always gets executed first for error check with all input ports valued to defaults set in the code "\
+									"(input types are inferred by the default values themselves)."
 
 // This could be nice, but actually not needed, as we can always create an input and connect it to Patch Time
 //#define	TIME_BASED
 
+// WARNING: Not supported at all, private interfaces!
+@interface QCImage: NSObject
+- (id)initWithFile:(id)aFile options: (id)someOpts;
+@end
+
 static NSArray		*keyWords;
 static NSArray		*libWords;
 static NSArray		*varWords;
-static NSImage		*dummyImage;
+static QCImage		*dummyImage;
 static NSColor		*dummyColor;
 static NSArray		*dummyStructure;
 
@@ -202,7 +210,7 @@ static int structureUserDataType(lua_State *L)
 		if (!dummyStructure)
 			dummyStructure	= [[NSArray	alloc] init];
 		if (!dummyImage)
-			dummyImage		= [[NSImage alloc] initWithContentsOfFile: defPath];
+			dummyImage		= [[QCImage alloc] initWithFile: defPath options: nil];
 		
 		_inputKeys		= [[NSMutableDictionary alloc] initWithCapacity: 1];
 		_outputKeys		= [[NSMutableDictionary alloc] initWithCapacity: 1];
@@ -321,7 +329,7 @@ static int structureUserDataType(lua_State *L)
 								{
 									id	value	= lua_touserdata(L, -1);
 									
-									if ([value isKindOfClass: [NSImage class]]) {
+									if ([value isKindOfClass: [QCImage class]]) {
 										inputType	= QCPortTypeImage;
 										portAttrs	= [NSDictionary dictionaryWithObjectsAndKeys: inputType, QCPortAttributeTypeKey,
 																								[key description], QCPortAttributeNameKey,
@@ -436,9 +444,10 @@ static int structureUserDataType(lua_State *L)
 								{
 									id	value	= lua_touserdata(L, -1);
 									
-									if ([value isKindOfClass: [NSImage class]]) {
+									if ([value isKindOfClass: [QCImage class]]) {
 										outputType	= QCPortTypeImage;
-										portAttrs	= [NSDictionary dictionaryWithObjectsAndKeys: outputType, QCPortAttributeTypeKey,
+										portAttrs	= [NSDictionary dictionaryWithObjectsAndKeys: value, QCPortAttributeDefaultValueKey,
+																								outputType, QCPortAttributeTypeKey,
 																								[key description], QCPortAttributeNameKey,
 																								nil];
 									} else if ([value isKindOfClass: [NSColor class]]) {
