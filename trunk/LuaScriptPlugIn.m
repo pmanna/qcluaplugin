@@ -201,7 +201,7 @@ static int structureUserDataType(lua_State *L)
 		if (!libWords)
 			libWords		= [[NSArray arrayWithObjects: @"coroutine", @"package", @"string", @"table", @"math", @"io", @"os", @"debug", nil] retain];
 		if (!varWords)
-			varWords		= [[NSArray arrayWithObjects: @"inputs", @"outputs", @"patchTime", @"main",
+			varWords		= [[NSArray arrayWithObjects: @"inputs", @"outputs", @"patchTime", @"_testMode", @"main",
 														@"imageType", @"colorType", @"structureType", nil] retain];
 		
 		// Dummy vars used to force a userdata type
@@ -261,6 +261,10 @@ static int structureUserDataType(lua_State *L)
 	
 	if (!(progCString = [[programString string] UTF8String]))
 		return;
+	
+	// Set a variable to check if we're in test mode
+	lua_pushboolean(L, YES);
+	lua_setglobal(L, "_testMode");
 	
 	if (!luaL_dostring(L, progCString)) {
 		NSEnumerator	*enumKeys;
@@ -508,6 +512,9 @@ static int structureUserDataType(lua_State *L)
 		}
 		lua_pop(L, 1);
 	}
+	
+	lua_pushboolean(L, NO);
+	lua_setglobal(L, "_testMode");
 }
 
 - (NSMutableAttributedString *)_coloredStringWithString: (NSString *)aProgram
