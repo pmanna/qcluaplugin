@@ -1,10 +1,10 @@
 /*
- *  LuaScriptPlugIn.h
+ *  LuaScriptViewController.h
  *  LuaScript
  *
- *  Created by Paolo on 05/05/2009.
+ *  Created by Paolo on 28/02/2010.
  *
- * Copyright (c) 2009 Paolo Manna
+ * Copyright (c) 2010 Paolo Manna
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification,
@@ -32,28 +32,17 @@
 
 #import <Quartz/Quartz.h>
 
-#import "lualib.h"
-#import "lauxlib.h"
+@class NoodleLineNumberView;
 
-@class LuaScriptViewController;
-
-@interface LuaScriptPlugIn : QCPlugIn
+@interface LuaScriptViewController : QCPlugInViewController
 {
-	NSAttributedString		*programString;
+	IBOutlet NSScrollView	*programView;
+	NoodleLineNumberView	*lineNumberView;
+	NSImage					*errorImage;
 	
-	NSMutableDictionary		*_inputKeys;
-	NSMutableDictionary		*_outputKeys;
-	
-	lua_State				*L;
-	
-	BOOL					_readyToRun;
-	BOOL					_checkSyntax;
-	BOOL					_programChanged;
-	NSString				*syntaxError;
-	
-	LuaScriptViewController	*viewCntrlr;
+	NSInteger				errorLineNum;
 }
 
-@property(copy)		NSString		*syntaxError;
+- (void)setErrorMarkerAtLine: (NSInteger)aLine;
 
 @end
