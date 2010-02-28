@@ -29,6 +29,10 @@
 		D85442B60FB2010200A8A0F6 /* Default.lua in Resources */ = {isa = PBXBuildFile; fileRef = D85442B50FB2010200A8A0F6 /* Default.lua */; };
 		D88564BF0FE8B3C3004BAF9C /* logo.gif in Resources */ = {isa = PBXBuildFile; fileRef = D88564BE0FE8B3C3004BAF9C /* logo.gif */; };
 		D8EFDC7E0FB0A8B2003C8C30 /* liblua.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D8EFDC7D0FB0A8B2003C8C30 /* liblua.a */; };
+		D8F8CE82113A889300390C55 /* NoodleLineNumberMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F8CE7F113A889300390C55 /* NoodleLineNumberMarker.m */; };
+		D8F8CE83113A889300390C55 /* NoodleLineNumberView.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F8CE81113A889300390C55 /* NoodleLineNumberView.m */; };
+		D8F8CE9C113A8E1E00390C55 /* LuaScriptViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F8CE9B113A8E1E00390C55 /* LuaScriptViewController.m */; };
+		D8F8CF1A113A9D7500390C55 /* error.png in Resources */ = {isa = PBXBuildFile; fileRef = D8F8CF19113A9D7500390C55 /* error.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +61,13 @@
 		D8EFDC800FB0A8E7003C8C30 /* lua.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lua.h; path = Lua/lua.h; sourceTree = "<group>"; };
 		D8EFDC810FB0A8E7003C8C30 /* lualib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lualib.h; path = Lua/lualib.h; sourceTree = "<group>"; };
 		D8EFDC890FB0A979003C8C30 /* luaconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = luaconf.h; path = Lua/luaconf.h; sourceTree = "<group>"; };
+		D8F8CE7E113A889300390C55 /* NoodleLineNumberMarker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NoodleLineNumberMarker.h; sourceTree = "<group>"; };
+		D8F8CE7F113A889300390C55 /* NoodleLineNumberMarker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NoodleLineNumberMarker.m; sourceTree = "<group>"; };
+		D8F8CE80113A889300390C55 /* NoodleLineNumberView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NoodleLineNumberView.h; sourceTree = "<group>"; };
+		D8F8CE81113A889300390C55 /* NoodleLineNumberView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NoodleLineNumberView.m; sourceTree = "<group>"; };
+		D8F8CE9A113A8E1E00390C55 /* LuaScriptViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LuaScriptViewController.h; sourceTree = "<group>"; };
+		D8F8CE9B113A8E1E00390C55 /* LuaScriptViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LuaScriptViewController.m; sourceTree = "<group>"; };
+		D8F8CF19113A9D7500390C55 /* error.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = error.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +110,7 @@
 			isa = PBXGroup;
 			children = (
 				D88564BE0FE8B3C3004BAF9C /* logo.gif */,
+				D8F8CF19113A9D7500390C55 /* error.png */,
 				D85442B50FB2010200A8A0F6 /* Default.lua */,
 				7238D5500DB6988600E9A42D /* Settings.xib */,
 				8D5B49B7048680CD000E48DA /* Info.plist */,
@@ -111,6 +123,12 @@
 			children = (
 				16BA95400A7EB2EB001E4983 /* LuaScriptPlugIn.h */,
 				16BA95410A7EB2EB001E4983 /* LuaScriptPlugIn.m */,
+				D8F8CE7E113A889300390C55 /* NoodleLineNumberMarker.h */,
+				D8F8CE7F113A889300390C55 /* NoodleLineNumberMarker.m */,
+				D8F8CE80113A889300390C55 /* NoodleLineNumberView.h */,
+				D8F8CE81113A889300390C55 /* NoodleLineNumberView.m */,
+				D8F8CE9A113A8E1E00390C55 /* LuaScriptViewController.h */,
+				D8F8CE9B113A8E1E00390C55 /* LuaScriptViewController.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -193,6 +211,7 @@
 				7238D5520DB6988600E9A42D /* Settings.xib in Resources */,
 				D85442B60FB2010200A8A0F6 /* Default.lua in Resources */,
 				D88564BF0FE8B3C3004BAF9C /* logo.gif in Resources */,
+				D8F8CF1A113A9D7500390C55 /* error.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -220,6 +239,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				16BA95420A7EB2EB001E4983 /* LuaScriptPlugIn.m in Sources */,
+				D8F8CE82113A889300390C55 /* NoodleLineNumberMarker.m in Sources */,
+				D8F8CE83113A889300390C55 /* NoodleLineNumberView.m in Sources */,
+				D8F8CE9C113A8E1E00390C55 /* LuaScriptViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -33,6 +33,7 @@
 #import <OpenGL/CGLMacro.h>
 
 #import "LuaScriptPlugIn.h"
+#import "LuaScriptViewController.h"
 
 #define	kQCPlugIn_Name				@"Lua"
 #define	kQCPlugIn_Description		"This patch executes a Lua script with an arbitrary number of input / output parameters.\n"\
@@ -271,6 +272,7 @@ static int structureUserDataType(lua_State *L)
 		NSObject		*keyName;
 		
 		if (_checkSyntax) {
+			[viewCntrlr setErrorMarkerAtLine: 0];
 			[self setSyntaxError: @"LuaScript Program OK"];
 		}
 		
@@ -508,7 +510,12 @@ static int structureUserDataType(lua_State *L)
 		_programChanged	= YES;
 	} else {
 		if (_checkSyntax) {
-			[self setSyntaxError: [NSString stringWithFormat: @"LuaScript Program Error: %s", lua_tostring(L, -1)]]; 
+			NSString	*errStr		= [NSString stringWithUTF8String: lua_tostring(L, -1)];
+			NSArray		*errItems	= [errStr componentsSeparatedByString: @":"];
+			int			errLine		= [[errItems objectAtIndex: 1] intValue];
+			
+			[viewCntrlr setErrorMarkerAtLine: errLine];
+			[self setSyntaxError: [NSString stringWithFormat: @"Lua Error at %d: %@", errLine, [errItems objectAtIndex: 2]]]; 
 		}
 		lua_pop(L, 1);
 	}
@@ -651,7 +658,9 @@ static int structureUserDataType(lua_State *L)
 
 - (QCPlugInViewController*) createViewController
 {
-	return [[QCPlugInViewController alloc] initWithPlugIn: self viewNibName: @"Settings"];
+	viewCntrlr	= [[LuaScriptViewController alloc] initWithPlugIn: self viewNibName: @"Settings"];
+	
+	return viewCntrlr;
 }
 
 // Bound as a target to a button in the IB file
