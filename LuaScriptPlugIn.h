@@ -32,6 +32,9 @@
 
 #import <Quartz/Quartz.h>
 
+#ifdef JIT
+#import "luajit.h"
+#endif
 #import "lualib.h"
 #import "lauxlib.h"
 

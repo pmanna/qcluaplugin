@@ -28,7 +28,18 @@
 		8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
 		D85442B60FB2010200A8A0F6 /* Default.lua in Resources */ = {isa = PBXBuildFile; fileRef = D85442B50FB2010200A8A0F6 /* Default.lua */; };
 		D88564BF0FE8B3C3004BAF9C /* logo.gif in Resources */ = {isa = PBXBuildFile; fileRef = D88564BE0FE8B3C3004BAF9C /* logo.gif */; };
-		D8EFDC7E0FB0A8B2003C8C30 /* liblua.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D8EFDC7D0FB0A8B2003C8C30 /* liblua.a */; };
+		D8D45C49118CAFE200982F89 /* liblua.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D8EFDC7D0FB0A8B2003C8C30 /* liblua.a */; };
+		D8D45C4F118CB05000982F89 /* Settings.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7238D5500DB6988600E9A42D /* Settings.xib */; };
+		D8D45C50118CB05000982F89 /* Default.lua in Resources */ = {isa = PBXBuildFile; fileRef = D85442B50FB2010200A8A0F6 /* Default.lua */; };
+		D8D45C51118CB05000982F89 /* logo.gif in Resources */ = {isa = PBXBuildFile; fileRef = D88564BE0FE8B3C3004BAF9C /* logo.gif */; };
+		D8D45C52118CB05000982F89 /* error.png in Resources */ = {isa = PBXBuildFile; fileRef = D8F8CF19113A9D7500390C55 /* error.png */; };
+		D8D45C54118CB05000982F89 /* LuaScriptPlugIn.m in Sources */ = {isa = PBXBuildFile; fileRef = 16BA95410A7EB2EB001E4983 /* LuaScriptPlugIn.m */; };
+		D8D45C55118CB05000982F89 /* NoodleLineNumberMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F8CE7F113A889300390C55 /* NoodleLineNumberMarker.m */; };
+		D8D45C56118CB05000982F89 /* NoodleLineNumberView.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F8CE81113A889300390C55 /* NoodleLineNumberView.m */; };
+		D8D45C57118CB05000982F89 /* LuaScriptViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F8CE9B113A8E1E00390C55 /* LuaScriptViewController.m */; };
+		D8D45C59118CB05000982F89 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7ADFEA557BF11CA2CBB /* Cocoa.framework */; };
+		D8D45C5A118CB05000982F89 /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 16BA96300A7EB9AC001E4983 /* Quartz.framework */; };
+		D8D45C6E118CB0C100982F89 /* libluajit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D8D45C6D118CB0C100982F89 /* libluajit.a */; };
 		D8F8CE82113A889300390C55 /* NoodleLineNumberMarker.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F8CE7F113A889300390C55 /* NoodleLineNumberMarker.m */; };
 		D8F8CE83113A889300390C55 /* NoodleLineNumberView.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F8CE81113A889300390C55 /* NoodleLineNumberView.m */; };
 		D8F8CE9C113A8E1E00390C55 /* LuaScriptViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D8F8CE9B113A8E1E00390C55 /* LuaScriptViewController.m */; };
@@ -54,8 +65,11 @@
 		7238D5510DB6988600E9A42D /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/Settings.xib; sourceTree = "<group>"; };
 		8D5B49B6048680CD000E48DA /* Lua.plugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Lua.plugin; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D5B49B7048680CD000E48DA /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		D85442B50FB2010200A8A0F6 /* Default.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Default.lua; sourceTree = "<group>"; };
+		D83F3ADA118D603200B18031 /* luajit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = luajit.h; path = Lua/luajit.h; sourceTree = "<group>"; };
+		D85442B50FB2010200A8A0F6 /* Default.lua */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Default.lua; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.lua; };
 		D88564BE0FE8B3C3004BAF9C /* logo.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = logo.gif; sourceTree = "<group>"; };
+		D8D45C5F118CB05000982F89 /* Lua.plugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Lua.plugin; sourceTree = BUILT_PRODUCTS_DIR; };
+		D8D45C6D118CB0C100982F89 /* libluajit.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libluajit.a; path = Lua/libluajit.a; sourceTree = "<group>"; };
 		D8EFDC7D0FB0A8B2003C8C30 /* liblua.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblua.a; path = Lua/liblua.a; sourceTree = "<group>"; };
 		D8EFDC7F0FB0A8E7003C8C30 /* lauxlib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lauxlib.h; path = Lua/lauxlib.h; sourceTree = "<group>"; };
 		D8EFDC800FB0A8E7003C8C30 /* lua.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lua.h; path = Lua/lua.h; sourceTree = "<group>"; };
@@ -77,7 +91,17 @@
 			files = (
 				8D5B49B4048680CD000E48DA /* Cocoa.framework in Frameworks */,
 				16BA96310A7EB9AC001E4983 /* Quartz.framework in Frameworks */,
-				D8EFDC7E0FB0A8B2003C8C30 /* liblua.a in Frameworks */,
+				D8D45C49118CAFE200982F89 /* liblua.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D8D45C58118CB05000982F89 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D8D45C59118CB05000982F89 /* Cocoa.framework in Frameworks */,
+				D8D45C5A118CB05000982F89 /* Quartz.framework in Frameworks */,
+				D8D45C6E118CB0C100982F89 /* libluajit.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -137,6 +161,7 @@
 			isa = PBXGroup;
 			children = (
 				8D5B49B6048680CD000E48DA /* Lua.plugin */,
+				D8D45C5F118CB05000982F89 /* Lua.plugin */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -157,6 +182,8 @@
 				D8EFDC810FB0A8E7003C8C30 /* lualib.h */,
 				D8EFDC890FB0A979003C8C30 /* luaconf.h */,
 				D8EFDC7D0FB0A8B2003C8C30 /* liblua.a */,
+				D83F3ADA118D603200B18031 /* luajit.h */,
+				D8D45C6D118CB0C100982F89 /* libluajit.a */,
 			);
 			name = Library;
 			sourceTree = "<group>";
@@ -182,6 +209,24 @@
 			productReference = 8D5B49B6048680CD000E48DA /* Lua.plugin */;
 			productType = "com.apple.product-type.bundle";
 		};
+		D8D45C4D118CB05000982F89 /* LuaScript JIT */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D8D45C5C118CB05000982F89 /* Build configuration list for PBXNativeTarget "LuaScript JIT" */;
+			buildPhases = (
+				D8D45C4E118CB05000982F89 /* Resources */,
+				D8D45C53118CB05000982F89 /* Sources */,
+				D8D45C58118CB05000982F89 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "LuaScript JIT";
+			productInstallPath = "$(HOME)/Library/Bundles";
+			productName = "Quartz Composer Plug In";
+			productReference = D8D45C5F118CB05000982F89 /* Lua.plugin */;
+			productType = "com.apple.product-type.bundle";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -192,13 +237,21 @@
 			};
 			buildConfigurationList = 1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "LuaScript" */;
 			compatibilityVersion = "Xcode 3.1";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
 			mainGroup = 089C166AFE841209C02AAC07 /* Quartz Composer Plug In */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				8D5B49AC048680CD000E48DA /* LuaScript */,
 				233E2C640A83C768005A62DF /* Build & Copy */,
+				8D5B49AC048680CD000E48DA /* LuaScript */,
+				D8D45C4D118CB05000982F89 /* LuaScript JIT */,
 			);
 		};
 /* End PBXProject section */
@@ -212,6 +265,17 @@
 				D85442B60FB2010200A8A0F6 /* Default.lua in Resources */,
 				D88564BF0FE8B3C3004BAF9C /* logo.gif in Resources */,
 				D8F8CF1A113A9D7500390C55 /* error.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D8D45C4E118CB05000982F89 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D8D45C4F118CB05000982F89 /* Settings.xib in Resources */,
+				D8D45C50118CB05000982F89 /* Default.lua in Resources */,
+				D8D45C51118CB05000982F89 /* logo.gif in Resources */,
+				D8D45C52118CB05000982F89 /* error.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -245,6 +309,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D8D45C53118CB05000982F89 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D8D45C54118CB05000982F89 /* LuaScriptPlugIn.m in Sources */,
+				D8D45C55118CB05000982F89 /* NoodleLineNumberMarker.m in Sources */,
+				D8D45C56118CB05000982F89 /* NoodleLineNumberView.m in Sources */,
+				D8D45C57118CB05000982F89 /* LuaScriptViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -267,25 +342,6 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		1DEB913B08733D840010E9CD /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_ENABLE_OBJC_GC = supported;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = LuaScript_Prefix.pch;
-				INFOPLIST_FILE = Info.plist;
-				INSTALL_PATH = "$(HOME)/Library/Graphics/Quartz Composer Plug-Ins";
-				PRODUCT_NAME = Lua;
-				WRAPPER_EXTENSION = plugin;
-				ZERO_LINK = YES;
-			};
-			name = Debug;
-		};
 		1DEB913C08733D840010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -296,22 +352,14 @@
 				GCC_PREFIX_HEADER = LuaScript_Prefix.pch;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Graphics/Quartz Composer Plug-Ins";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Lua\"",
+				);
 				PRODUCT_NAME = Lua;
 				WRAPPER_EXTENSION = plugin;
 			};
 			name = Release;
-		};
-		1DEB913F08733D840010E9CD /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				LIBRARY_SEARCH_PATHS = "$SRCROOT/**";
-				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx10.5;
-			};
-			name = Debug;
 		};
 		1DEB914008733D840010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -326,17 +374,105 @@
 			};
 			name = Release;
 		};
-		233E2D8A0A83C7AC005A62DF /* Debug */ = {
+		233E2D8B0A83C7AC005A62DF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "Build & Install";
+			};
+			name = Release;
+		};
+		D8D45C43118CAF6D00982F89 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					JIT,
+					DEBUG,
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LIBRARY_SEARCH_PATHS = "$SRCROOT/**";
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx10.5;
+			};
+			name = Debug;
+		};
+		D8D45C44118CAF6D00982F89 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_ENABLE_OBJC_GC = supported;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = LuaScript_Prefix.pch;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Graphics/Quartz Composer Plug-Ins";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Lua\"",
+				);
+				PRODUCT_NAME = Lua;
+				WRAPPER_EXTENSION = plugin;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		D8D45C45118CAF6D00982F89 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				PRODUCT_NAME = "Build & Install";
 			};
 			name = Debug;
 		};
-		233E2D8B0A83C7AC005A62DF /* Release */ = {
+		D8D45C5D118CB05000982F89 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = "Build & Install";
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				COPY_PHASE_STRIP = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_ENABLE_OBJC_GC = supported;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = LuaScript_Prefix.pch;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Graphics/Quartz Composer Plug-Ins";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\\\"$(SRCROOT)/Lua\\\"",
+					"\"$(SRCROOT)/Lua\"",
+				);
+				PRODUCT_NAME = Lua;
+				WRAPPER_EXTENSION = plugin;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		D8D45C5E118CB05000982F89 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					i386,
+					x86_64,
+				);
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_OBJC_GC = supported;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = LuaScript_Prefix.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = JIT;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Graphics/Quartz Composer Plug-Ins";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\\\"$(SRCROOT)/Lua\\\"",
+					"\"$(SRCROOT)/Lua\"",
+				);
+				PRODUCT_NAME = Lua;
+				WRAPPER_EXTENSION = plugin;
 			};
 			name = Release;
 		};
@@ -346,7 +482,7 @@
 		1DEB913A08733D840010E9CD /* Build configuration list for PBXNativeTarget "LuaScript" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1DEB913B08733D840010E9CD /* Debug */,
+				D8D45C44118CAF6D00982F89 /* Debug */,
 				1DEB913C08733D840010E9CD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -355,7 +491,7 @@
 		1DEB913E08733D840010E9CD /* Build configuration list for PBXProject "LuaScript" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				1DEB913F08733D840010E9CD /* Debug */,
+				D8D45C43118CAF6D00982F89 /* Debug */,
 				1DEB914008733D840010E9CD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -364,8 +500,17 @@
 		233E2D890A83C7AC005A62DF /* Build configuration list for PBXAggregateTarget "Build & Copy" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				233E2D8A0A83C7AC005A62DF /* Debug */,
+				D8D45C45118CAF6D00982F89 /* Debug */,
 				233E2D8B0A83C7AC005A62DF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D8D45C5C118CB05000982F89 /* Build configuration list for PBXNativeTarget "LuaScript JIT" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D8D45C5D118CB05000982F89 /* Debug */,
+				D8D45C5E118CB05000982F89 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

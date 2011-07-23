@@ -248,6 +248,9 @@ static int structureUserDataType(lua_State *L)
 	if (!L) {
 		L	= lua_open();
 		
+#ifdef JIT
+		LUAJIT_VERSION_SYM();  /* linker-enforced version check */
+#endif
 		lua_gc(L, LUA_GCSTOP, 0);  /* stop collector during initialization */
 		luaL_openlibs(L);  /* open libraries */
 		lua_register(L, "imageType", imageUserDataType);
